@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use App\Models\Election;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCandidateController extends Controller
 {
@@ -32,7 +33,6 @@ class AdminCandidateController extends Controller
     public function create()
     {
         $elections = Election::where('company_id', $this->companyId())
-            ->where('is_active', false)
             ->latest()
             ->get();
 
@@ -45,16 +45,22 @@ class AdminCandidateController extends Controller
             'election_id' => 'required|exists:elections,id',
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $election = Election::where('company_id', $this->companyId())
-            ->findOrFail($request->election_id);
+        $photoPath = null;
+
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')
+                ->store('candidates', 'public');
+        }
 
         Candidate::create([
             'company_id'  => $this->companyId(),
-            'election_id' => $election->id,
+            'election_id' => $request->election_id,
             'name'        => $request->name,
             'description' => $request->description,
+            'photo'       => $photoPath,
         ]);
 
         return redirect()
@@ -83,16 +89,26 @@ class AdminCandidateController extends Controller
             'election_id' => 'required|exists:elections,id',
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $election = Election::where('company_id', $this->companyId())
-            ->findOrFail($request->election_id);
+        if ($request->hasFile('photo')) {
+
+            if ($candidate->photo) {
+                Storage::disk('public')->delete($candidate->photo);
+            }
+
+            $candidate->photo = $request->file('photo')
+                ->store('candidates', 'public');
+        }
 
         $candidate->update([
-            'election_id' => $election->id,
+            'election_id' => $request->election_id,
             'name'        => $request->name,
             'description' => $request->description,
         ]);
+
+        $candidate->save();
 
         return redirect()
             ->route('admin.candidates.index')
@@ -103,6 +119,10 @@ class AdminCandidateController extends Controller
     {
         $candidate = Candidate::where('company_id', $this->companyId())
             ->findOrFail($id);
+
+        if ($candidate->photo) {
+            Storage::disk('public')->delete($candidate->photo);
+        }
 
         $candidate->delete();
 

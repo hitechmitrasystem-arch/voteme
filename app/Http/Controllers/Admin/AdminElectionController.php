@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class AdminElectionController extends Controller
 {
+
     private function admin()
     {
         return auth('admin')->user();
@@ -141,7 +142,8 @@ class AdminElectionController extends Controller
     */
     public function toggle($id)
     {
-        $election = Election::findOrFail($id);
+        $election = Election::where('company_id', $this->companyId())
+            ->findOrFail($id);
 
         $election->is_active = !$election->is_active;
         $election->save();
@@ -156,7 +158,8 @@ class AdminElectionController extends Controller
     */
     public function lock($id)
     {
-        $election = Election::findOrFail($id);
+        $election = Election::where('company_id', $this->companyId())
+            ->findOrFail($id);
 
         $election->is_locked = true;
         $election->save();
@@ -171,7 +174,8 @@ class AdminElectionController extends Controller
     */
     public function results($id)
     {
-        $election = Election::with(['candidates.votes'])
+        $election = Election::where('company_id', $this->companyId())
+            ->with(['candidates.votes'])
             ->findOrFail($id);
 
         return view('admin.elections.results', compact('election'));

@@ -3,100 +3,51 @@
 @section('content')
 
 <style>
-    body {
-        background: linear-gradient(-45deg, #000428, #004e92, #000046, #1a2980);
-        background-size: 400% 400%;
-        animation: gradientMove 12s ease infinite;
-        min-height: 100vh;
-    }
+.page-container {
+    padding-top: 70px;
+}
 
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+.glass-card {
+    border-radius: 20px;
+    background: #1f2937;
+    padding: 40px;
+    color: white;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
 
-    .page-container {
-        padding-top: 70px;
-        animation: fadeIn 0.8s ease forwards;
-        opacity: 0;
-    }
+.form-control {
+    background: #111827;
+    border: 1px solid #374151;
+    color: #fff;
+}
 
-    @keyframes fadeIn {
-        to { opacity: 1; }
-    }
+.form-control:focus {
+    background: #1f2937;
+    border-color: #22c55e;
+    box-shadow: none;
+    color: #fff;
+}
 
-    .title-section h1 {
-        font-size: 34px;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 5px;
-    }
-
-    .title-section p {
-        color: #cfd8ff;
-        font-size: 14px;
-        margin-bottom: 30px;
-    }
-
-    .glass-card {
-        border-radius: 25px;
-        background: rgba(255,255,255,0.08);
-        backdrop-filter: blur(15px);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        padding: 40px;
-        color: white;
-    }
-
-    .form-control {
-        background: rgba(255,255,255,0.15);
-        border: none;
-        color: #fff;
-        transition: 0.3s ease;
-    }
-
-    .form-control:focus {
-        background: rgba(255,255,255,0.25);
-        box-shadow: 0 0 12px #2e5bff;
-        color: #fff;
-    }
-
-    select.form-control option {
-        color: #000;
-    }
-
-    .btn-save {
-        background: #1f3c88;
-        border: none;
-        border-radius: 50px;
-        padding: 8px 22px;
-        transition: 0.3s ease;
-    }
-
-    .btn-save:hover {
-        background: #2e5bff;
-        box-shadow: 0 0 15px #2e5bff;
-        transform: translateY(-2px);
-    }
-
-    .btn-back {
-        border-radius: 50px;
-    }
-
+.preview-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 10px;
+    border: 3px solid #22c55e;
+}
 </style>
 
 <div class="container page-container">
 
-    <!-- Title -->
-    <div class="title-section">
-        <h1>Create Candidate</h1>
-        <p>Add a candidate to an election session</p>
-    </div>
+    <h2 class="mb-4 text-white">Create Candidate</h2>
 
-    <!-- Glass Card -->
     <div class="glass-card">
 
-        <form action="{{ route('admin.candidates.store') }}" method="POST">
+        <form action="{{ route('admin.candidates.store') }}" 
+              method="POST" 
+              enctype="multipart/form-data">
+
             @csrf
 
             <div class="mb-3">
@@ -116,16 +67,23 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3">
                 <label class="form-label">Description</label>
                 <textarea name="description" rows="3" class="form-control"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-save">
+            <div class="mb-3">
+                <label class="form-label">Photo</label>
+                <input type="file" name="photo" class="form-control" accept="image/*" onchange="previewImage(event)">
+                <img id="preview" class="preview-img d-none">
+            </div>
+
+            <button type="submit" class="btn btn-success">
                 Save Candidate
             </button>
 
-            <a href="{{ route('admin.candidates.index') }}" class="btn btn-outline-light btn-back ms-2">
+            <a href="{{ route('admin.candidates.index') }}" 
+               class="btn btn-outline-light ms-2">
                 Back
             </a>
 
@@ -134,5 +92,17 @@
     </div>
 
 </div>
+
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('preview');
+        output.src = reader.result;
+        output.classList.remove('d-none');
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
 
 @endsection
