@@ -1,11 +1,11 @@
 FROM php:8.2-apache
 
-# Install packages
+# Install required packages
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev sqlite3 libsqlite3-dev \
     && docker-php-ext-install pdo pdo_sqlite zip
 
-# Enable Apache rewrite
+# Enable apache rewrite
 RUN a2enmod rewrite
 
 # Allow .htaccess
@@ -25,6 +25,10 @@ COPY . .
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN composer install --no-dev --optimize-autoloader
+
+# Create SQLite database
+RUN mkdir -p database
+RUN touch database/database.sqlite
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html
