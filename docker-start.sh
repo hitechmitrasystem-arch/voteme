@@ -10,7 +10,10 @@ touch database/database.sqlite
 chown -R www-data:www-data /var/www/html
 chmod -R 775 storage bootstrap/cache database
 
-# Clear Laravel cache
+# Generate APP KEY if missing
+php artisan key:generate --force
+
+# Clear Laravel caches
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
