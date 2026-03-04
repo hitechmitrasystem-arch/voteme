@@ -1,149 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Voter Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {{-- CSRF Token Meta --}}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<title>CSV ESCH Member Voting Portal</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(-45deg, #000428, #004e92, #000046, #1a2980);
-            background-size: 400% 400%;
-            animation: gradientMove 12s ease infinite;
-            font-family: 'Segoe UI', sans-serif;
-        }
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .glass-card {
-            width: 480px;
-            padding: 45px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(18px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-            color: white;
-        }
+<style>
 
-        .title {
-            font-size: 26px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px #4da3ff;
-        }
+body{
+margin:0;
+min-height:100vh;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:linear-gradient(180deg,#0b1f3a,#1d3e6e);
+display:flex;
+flex-direction:column;
+}
 
-        .form-control {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-        }
+/* Header */
 
-        .form-control::placeholder {
-            color: #cfd8ff;
-        }
+.portal-header{
+background:#ffffff;
+border-bottom:1px solid #e5e7eb;
+padding:18px 40px;
+}
 
-        .form-control:focus {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            box-shadow: 0 0 10px #4da3ff;
-        }
+.portal-title{
+font-weight:600;
+font-size:18px;
+color:#1e3a8a;
+}
 
-        .btn-login {
-            background: linear-gradient(45deg, #1f3c88, #2e5bff);
-            border: none;
-            padding: 12px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            transition: 0.3s ease;
-        }
+.portal-subtitle{
+font-size:13px;
+color:#6b7280;
+}
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
+/* Main */
 
-        .back-link {
-            color: #cfd8ff;
-            text-decoration: none;
-            font-size: 14px;
-        }
+.portal-container{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:40px;
+}
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+/* Login Card */
+
+.login-card{
+width:420px;
+background:white;
+border-radius:12px;
+padding:40px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(15px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.login-title{
+font-size:22px;
+font-weight:600;
+margin-bottom:6px;
+}
+
+.login-subtitle{
+font-size:14px;
+color:#6b7280;
+margin-bottom:28px;
+}
+
+.form-control{
+height:46px;
+border-radius:8px;
+}
+
+.form-control:focus{
+border-color:#2563eb;
+box-shadow:0 0 0 2px rgba(37,99,235,0.2);
+}
+
+.btn-login{
+height:46px;
+border-radius:8px;
+font-weight:500;
+background:#1d4ed8;
+border:none;
+color:white;
+}
+
+.btn-login:hover{
+background:#1e40af;
+}
+
+.security-note{
+font-size:12px;
+color:#6b7280;
+margin-top:18px;
+}
+
+.portal-footer{
+text-align:center;
+padding:18px;
+font-size:12px;
+color:#9ca3af;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<div class="glass-card">
+<header class="portal-header d-flex justify-content-between align-items-center">
 
-    <div class="title">
-        Voter Login
-    </div>
+<div>
+<div class="portal-title">CSV ESCH Voting System</div>
+<div class="portal-subtitle">Luxembourg Member Portal</div>
+</div>
 
-    {{-- Success Message --}}
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+</header>
 
-    {{-- Error Messages --}}
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            {{ $errors->first() }}
-        </div>
-    @endif
+<div class="portal-container">
 
-    <form method="POST" action="{{ route('voter.login.submit') }}">
-        @csrf
+<div class="login-card">
 
-        <div class="mb-3">
-            <input type="text"
-                   name="voter_id"
-                   class="form-control"
-                   placeholder="Enter Voter ID"
-                   value="{{ old('voter_id') }}"
-                   required>
-        </div>
+<div class="login-title">
+ Voter Login
+</div>
 
-        <div class="mb-4">
-            <input type="password"
-                   name="passcode"
-                   class="form-control"
-                   placeholder="Enter Passcode"
-                   required>
-        </div>
+<div class="login-subtitle">
+Authenticate to access the secure voting platform
+</div>
 
-        <button type="submit" class="btn btn-login w-100">
-            Secure Login
-        </button>
+{{-- Success message --}}
+@if(session('success'))
+<div class="alert alert-success">
+{{ session('success') }}
+</div>
+@endif
 
-        <div class="text-center mt-4">
-            <a href="{{ route('home') }}" class="back-link">← Back to Home</a>
-        </div>
+{{-- Error message --}}
+@if($errors->any())
+<div class="alert alert-danger">
+{{ $errors->first() }}
+</div>
+@endif
 
-    </form>
+<form method="POST"
+action="{{ route('voter.login.submit') }}"
+autocomplete="off"
+id="loginForm">
+
+@csrf
+
+<div class="mb-3">
+
+<label class="form-label">
+Member ID
+</label>
+
+<input
+type="text"
+name="voter_id"
+class="form-control"
+value="{{ old('voter_id') }}"
+placeholder="Enter your member ID"
+required
+autocomplete="off">
 
 </div>
+
+<div class="mb-3">
+
+<label class="form-label">
+Passcode
+</label>
+
+<input
+type="password"
+name="passcode"
+class="form-control"
+placeholder="Enter secure passcode"
+required
+autocomplete="new-password">
+
+</div>
+
+<button type="submit"
+class="btn btn-login w-100"
+id="loginBtn">
+
+Sign In
+
+</button>
+
+</form>
+
+<div class="security-note text-center">
+
+🔒 Secure voting system — all sessions are encrypted.
+
+</div>
+
+</div>
+
+</div>
+
+<footer class="portal-footer">
+
+© {{ date('Y') }} CSV ESCH Luxembourg • Secure Voting Portal
+
+</footer>
+
+<script>
+
+/* Prevent double submit */
+
+document.getElementById("loginForm").addEventListener("submit", function(){
+
+document.getElementById("loginBtn").disabled = true;
+document.getElementById("loginBtn").innerText = "Signing In...";
+
+});
+
+/* Ensure CSRF token always exists */
+
+const token = document.querySelector('meta[name="csrf-token"]');
+
+if(token){
+window.Laravel = {
+csrfToken: token.getAttribute('content')
+};
+}
+
+</script>
 
 </body>
 </html>

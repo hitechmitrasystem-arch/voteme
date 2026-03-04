@@ -1,258 +1,310 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Voter Dashboard</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>CSV ESCH Voting Portal</title>
 
-    <style>
-        body {
-            min-height: 100vh;
-            background: linear-gradient(-45deg, #000428, #004e92, #000046, #1a2980);
-            background-size: 400% 400%;
-            animation: gradientMove 12s ease infinite;
-            font-family: 'Segoe UI', sans-serif;
-            color: #fff;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .dashboard-wrapper {
-            max-width: 1100px;
-            margin: auto;
-            padding: 60px 20px;
-        }
+<style>
 
-        .glass-card {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            margin-bottom: 30px;
-        }
+body{
+margin:0;
+min-height:100vh;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:#f5f7fb;
+}
 
-        .glow-title {
-            font-size: 28px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px #4da3ff,
-                         0 0 20px #4da3ff,
-                         0 0 40px #4da3ff;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
+/* Header */
 
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #4da3ff; }
-            to { text-shadow: 0 0 25px #6bb8ff; }
-        }
+.portal-header{
+background:white;
+border-bottom:1px solid #e5e7eb;
+padding:18px 40px;
+}
 
-        .header-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.portal-title{
+font-size:18px;
+font-weight:600;
+color:#1e3a8a;
+}
 
-        .logout-btn {
-            background: linear-gradient(45deg, #ff4b2b, #ff416c);
-            border: none;
-            border-radius: 50px;
-            padding: 8px 18px;
-            color: white;
-            transition: 0.3s ease;
-        }
+.portal-subtitle{
+font-size:13px;
+color:#6b7280;
+}
 
-        .logout-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
+/* Container */
 
-        .election-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 18px;
-            padding: 25px;
-            transition: 0.3s ease;
-        }
+.dashboard-container{
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
 
-        .election-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
+/* User card */
 
-        .candidate-card {
-            background: rgba(255,255,255,0.06);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
+.user-card{
+background:white;
+border-radius:10px;
+padding:22px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+margin-bottom:25px;
+}
 
-        .candidate-card:hover {
-            border: 2px solid #4da3ff;
-            background: rgba(255,255,255,0.1);
-        }
+.logout-btn{
+background:#ef4444;
+border:none;
+}
 
-        .candidate-img {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #4da3ff;
-        }
+.logout-btn:hover{
+background:#dc2626;
+}
 
-        .submit-btn {
-            background: linear-gradient(45deg, #1f3c88, #2e5bff);
-            border: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            transition: 0.3s ease;
-        }
+/* Election cards */
 
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
+.election-card{
+background:white;
+border-radius:10px;
+padding:25px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+margin-bottom:25px;
+}
 
-        .typing::after {
-            content: '|';
-            animation: blink 1s infinite;
-        }
+.election-title{
+font-size:18px;
+font-weight:600;
+}
 
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-    </style>
+/* Candidate rows */
+
+.candidate-row{
+border:1px solid #e5e7eb;
+border-radius:8px;
+padding:12px;
+margin-bottom:12px;
+transition:.2s;
+}
+
+.candidate-row:hover{
+background:#f3f4f6;
+}
+
+.candidate-img{
+width:55px;
+height:55px;
+border-radius:50%;
+object-fit:cover;
+}
+
+/* Vote button */
+
+.vote-btn{
+background:#1d4ed8;
+border:none;
+}
+
+.vote-btn:hover{
+background:#1e40af;
+}
+
+/* Alerts */
+
+.alert{
+border-radius:8px;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<div class="dashboard-wrapper">
+<header class="portal-header d-flex justify-content-between align-items-center">
 
-    <div class="glow-title typing" id="typingTitle">
-        Voter Dashboard
-    </div>
+<div>
+<div class="portal-title">CSV ESCH Voting System</div>
+<div class="portal-subtitle">Luxembourg Member Portal</div>
+</div>
 
-    <div class="glass-card header-box">
-        <div>
-            <h5 class="mb-1">Welcome, {{ $voter->name }}</h5>
-            <small>Voter ID: {{ $voter->voter_id }}</small>
-        </div>
+<form method="POST" action="{{ route('voter.logout') }}">
+@csrf
+<button class="btn btn-sm logout-btn text-white">
+Logout
+</button>
+</form>
 
-        <form method="POST" action="{{ route('voter.logout') }}">
-            @csrf
-            <button class="logout-btn">Logout</button>
-        </form>
-    </div>
+</header>
 
-    @if(session('success'))
-        <div class="alert alert-success glass-card">
-            {{ session('success') }}
-        </div>
-    @endif
+<div class="dashboard-container">
 
-    @if(session('error'))
-        <div class="alert alert-danger glass-card">
-            {{ session('error') }}
-        </div>
-    @endif
+<div class="user-card d-flex justify-content-between align-items-center">
 
-    @forelse($elections as $election)
-
-        @php
-            $alreadyVoted = \App\Models\Vote::where('voter_id', $voter->id)
-                ->where('election_id', $election->id)
-                ->exists();
-        @endphp
-
-        <div class="glass-card election-card">
-
-            <h5 class="fw-bold mb-2">{{ $election->title }}</h5>
-            <small>Select up to {{ $election->max_choices }} candidate(s)</small>
-
-            <hr class="border-light">
-
-            @if($alreadyVoted)
-
-                <div class="alert alert-success">
-                    ✅ You have already voted.
-                </div>
-
-            @else
-
-                <form method="POST" action="{{ route('voter.vote') }}">
-                    @csrf
-                    <input type="hidden" name="election_id" value="{{ $election->id }}">
-
-                    @foreach($election->candidates as $candidate)
-                        <label class="candidate-card w-100">
-
-                            <div class="d-flex align-items-center">
-
-                                <input type="checkbox"
-                                       name="candidates[]"
-                                       value="{{ $candidate->id }}"
-                                       class="form-check-input me-3">
-
-                                <img src="{{ asset('storage/'.$candidate->photo) }}"
-                                     class="candidate-img me-3">
-
-                                <div>
-                                    <h6 class="mb-1">{{ $candidate->name }}</h6>
-                                    <small>{{ $candidate->description }}</small>
-                                </div>
-
-                            </div>
-
-                        </label>
-                    @endforeach
-
-                    <button class="submit-btn mt-3">
-                        Submit Vote
-                    </button>
-
-                </form>
-
-            @endif
-
-        </div>
-
-    @empty
-        <div class="alert alert-warning glass-card">
-            No active elections available.
-        </div>
-    @endforelse
+<div>
+<strong>{{ $voter->name }}</strong><br>
+<small class="text-muted">Member ID: {{ $voter->voter_id }}</small>
+</div>
 
 </div>
 
+
+@if(session('success'))
+<div class="alert alert-success">
+{{ session('success') }}
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger">
+{{ session('error') }}
+</div>
+@endif
+
+
+@forelse($elections as $election)
+
+@php
+$alreadyVoted = \App\Models\Vote::where('voter_id',$voter->id)
+->where('election_id',$election->id)
+->exists();
+@endphp
+
+<div class="election-card">
+
+<div class="election-title mb-2">
+{{ $election->title }}
+</div>
+
+<div class="text-muted mb-3">
+Select up to {{ $election->max_choices }} candidate(s)
+</div>
+
+@if($alreadyVoted)
+
+<div class="alert alert-success">
+You have already voted in this election.
+</div>
+
+@else
+
+<form method="POST" action="{{ route('voter.vote') }}" class="vote-form">
+@csrf
+
+<input type="hidden" name="election_id" value="{{ $election->id }}">
+
+@foreach($election->candidates as $candidate)
+
+<label class="candidate-row w-100">
+
+<div class="d-flex align-items-center">
+
+<input
+type="checkbox"
+name="candidates[]"
+value="{{ $candidate->id }}"
+class="form-check-input me-3">
+
+<img
+src="{{ asset('storage/'.$candidate->photo) }}"
+class="candidate-img me-3">
+
+<div>
+
+<strong>{{ $candidate->name }}</strong><br>
+
+<small class="text-muted">
+{{ $candidate->description }}
+</small>
+
+</div>
+
+</div>
+
+</label>
+
+@endforeach
+
+<button type="button" class="btn vote-btn text-white mt-3 openConfirm">
+Submit Vote
+</button>
+
+</form>
+
+@endif
+
+</div>
+
+@empty
+
+<div class="alert alert-warning">
+No active elections available.
+</div>
+
+@endforelse
+
+</div>
+
+
+<!-- CONFIRM VOTE MODAL -->
+
+<div class="modal fade" id="confirmVoteModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+
+<div class="modal-header">
+<h5 class="modal-title">Confirm Your Vote</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+Are you sure you want to submit your vote?  
+<strong>This action cannot be changed later.</strong>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+Cancel
+</button>
+
+<button type="button" class="btn btn-primary" id="confirmSubmit">
+Yes, Submit Vote
+</button>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    const text = "Voting Dashboard";
-    let i = 0;
-    const speed = 60;
-    const el = document.getElementById("typingTitle");
-    el.innerHTML = "";
 
-    function typeWriter() {
-        if (i < text.length) {
-            el.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, speed);
-        }
-    }
+let selectedForm = null;
 
-    typeWriter();
+document.querySelectorAll(".openConfirm").forEach(btn=>{
+btn.addEventListener("click",function(){
+
+selectedForm = this.closest("form");
+
+let modal = new bootstrap.Modal(document.getElementById("confirmVoteModal"));
+modal.show();
+
+});
+});
+
+document.getElementById("confirmSubmit").addEventListener("click",function(){
+
+if(selectedForm){
+selectedForm.submit();
+}
+
+});
+
 </script>
 
 </body>
