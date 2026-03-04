@@ -34,3 +34,7 @@ RUN touch database/database.sqlite
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
+COPY docker-start.sh /usr/local/bin/docker-start.sh
+RUN chmod +x /usr/local/bin/docker-start.sh
+
+CMD ["docker-start.sh"]

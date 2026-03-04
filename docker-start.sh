@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create SQLite database if missing
+# Create SQLite database
 mkdir -p database
 touch database/database.sqlite
 
